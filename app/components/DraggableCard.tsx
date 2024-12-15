@@ -65,12 +65,10 @@ export default function DraggableCard({ todo, onDragEnd, onToggle, onRemove, onE
     .onUpdate((event) => {
       'worklet';
       if (Math.abs(event.translationY) > 20 && Math.abs(event.translationX) < 20) {
-        // Vertical swipe detected
         isDeleting.value = true;
         translateY.value = event.translationY;
         scale.value = withSpring(0.95);
       } else if (!isDeleting.value) {
-        // Horizontal drag
         translateX.value = event.translationX;
         translateY.value = event.translationY;
         runOnJS(onDragUpdate)(event.translationX);
@@ -79,7 +77,6 @@ export default function DraggableCard({ todo, onDragEnd, onToggle, onRemove, onE
     .onEnd((event) => {
       'worklet';
       if (isDeleting.value && Math.abs(event.translationY) > SWIPE_THRESHOLD) {
-        // Show delete confirmation
         runOnJS(handleRemove)();
       } else {
         const moveToCompleted = event.translationX > 100;

@@ -2,8 +2,7 @@ import React, { useCallback, useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Animated, {
   useAnimatedProps,
-  useSharedValue,
-  withSequence,
+  useSharedValue,  
   withTiming,
   withDelay,
   runOnJS,
@@ -20,8 +19,7 @@ interface AnimatedSplashProps {
 }
 
 export default function AnimatedSplash({ onAnimationComplete }: AnimatedSplashProps) {
-  const theme = useTheme();
-  const progress = useSharedValue(0);
+  const theme = useTheme();  
   const circleScale = useSharedValue(0);
   const circleOpacity = useSharedValue(1);
   const checkProgress = useSharedValue(0);
@@ -43,13 +41,11 @@ export default function AnimatedSplash({ onAnimationComplete }: AnimatedSplashPr
   }));
 
   const startAnimation = useCallback(() => {
-    // Circle scale up animation
     circleScale.value = withTiming(1, {
       duration: 600,
       easing: Easing.bezierFn(0.25, 0.1, 0.25, 1),
     });
 
-    // Checkmark drawing animation
     checkProgress.value = withDelay(
       400,
       withTiming(1, {
@@ -58,7 +54,6 @@ export default function AnimatedSplash({ onAnimationComplete }: AnimatedSplashPr
       })
     );
 
-    // Fade out animation
     circleOpacity.value = withDelay(
       1600,
       withTiming(0, {

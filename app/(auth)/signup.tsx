@@ -23,7 +23,6 @@ export default function SignUpScreen() {
     setError(null);
     
     try {
-      // Sign up the user
       const { error: signUpError, data: signUpData } = await supabase.auth.signUp({
         email,
         password,
@@ -31,7 +30,6 @@ export default function SignUpScreen() {
 
       if (signUpError) throw signUpError;
 
-      // Since email confirmation is disabled, we can sign in immediately
       if (signUpData.user) {
         const { error: signInError } = await supabase.auth.signInWithPassword({
           email,
@@ -39,7 +37,6 @@ export default function SignUpScreen() {
         });
 
         if (signInError) throw signInError;
-        // The _layout.tsx will handle the navigation to the app
       }
       
     } catch (error) {
