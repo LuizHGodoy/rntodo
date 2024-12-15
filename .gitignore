@@ -37,3 +37,9 @@ yarn-error.*
 
 # git
 .env
+
+# android
+android/
+
+# ios
+ios/

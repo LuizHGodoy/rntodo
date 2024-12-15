@@ -3,6 +3,7 @@
     "name": "Todo App",
     "slug": "todo-app",
     "version": "1.0.0",
+    "runtimeVersion": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
@@ -43,9 +44,6 @@
       }
     },
     "owner": "luizhgodoy",
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
     "updates": {
       "url": "https://u.expo.dev/7f6362b4-c9a2-4c93-8b88-a84df8ea09a6"
     },
