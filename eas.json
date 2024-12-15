@@ -1,11 +1,18 @@
 {
   "cli": {
-    "version": ">= 5.9.1"
+    "version": ">= 5.9.1",
+    "appVersionSource": "local"
   },
   "build": {
     "development": {
       "developmentClient": true,
       "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_SUPABASE_URL": "https://bff-aplicativo.gtrademark.com.br/api/v1",
+        "EXPO_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxucWtmdGt2a2tpYW11d2pwb3d0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQyNDA1ODgsImV4cCI6MjA0OTgxNjU4OH0.aDmsW3Y_pdBwNXRNeZ94ZemIhSU1D26CEsLQYkPcj4A",
+        "EXPO_PUBLIC_SUPABASE_SERVICE_ROLE_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxucWtmdGt2a2tpYW11d2pwb3d0Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTczNDI0MDU4OCwiZXhwIjoyMDQ5ODE2NTg4fQ.uk-tiRKXny_Dfw5E1EAF99gJvOtyIHNMxc5anEcdqZw",
+        "EXPO_PUBLIC_SUPABASE_JWT_SECRET": "mR3E+OlqpPWmMVRo37QYBh200dP6DsEUDgJCplSoens/Ym/h7SFtITYv+7vm+2si6EQKDW3g4c88lgQSrOwq8Q=="
+      },
       "android": {
         "buildType": "apk"
       },
@@ -15,12 +22,24 @@
     },
     "preview": {
       "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_SUPABASE_URL": "https://bff-aplicativo.gtrademark.com.br/api/v1",
+        "EXPO_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxucWtmdGt2a2tpYW11d2pwb3d0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQyNDA1ODgsImV4cCI6MjA0OTgxNjU4OH0.aDmsW3Y_pdBwNXRNeZ94ZemIhSU1D26CEsLQYkPcj4A",
+        "EXPO_PUBLIC_SUPABASE_SERVICE_ROLE_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxucWtmdGt2a2tpYW11d2pwb3d0Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTczNDI0MDU4OCwiZXhwIjoyMDQ5ODE2NTg4fQ.uk-tiRKXny_Dfw5E1EAF99gJvOtyIHNMxc5anEcdqZw",
+        "EXPO_PUBLIC_SUPABASE_JWT_SECRET": "mR3E+OlqpPWmMVRo37QYBh200dP6DsEUDgJCplSoens/Ym/h7SFtITYv+7vm+2si6EQKDW3g4c88lgQSrOwq8Q=="
+      },
       "android": {
         "buildType": "apk"
       }
     },
     "production": {
       "autoIncrement": true,
+      "env": {
+        "EXPO_PUBLIC_SUPABASE_URL": "https://bff-aplicativo.gtrademark.com.br/api/v1",
+        "EXPO_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxucWtmdGt2a2tpYW11d2pwb3d0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQyNDA1ODgsImV4cCI6MjA0OTgxNjU4OH0.aDmsW3Y_pdBwNXRNeZ94ZemIhSU1D26CEsLQYkPcj4A",
+        "EXPO_PUBLIC_SUPABASE_SERVICE_ROLE_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxucWtmdGt2a2tpYW11d2pwb3d0Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTczNDI0MDU4OCwiZXhwIjoyMDQ5ODE2NTg4fQ.uk-tiRKXny_Dfw5E1EAF99gJvOtyIHNMxc5anEcdqZw",
+        "EXPO_PUBLIC_SUPABASE_JWT_SECRET": "mR3E+OlqpPWmMVRo37QYBh200dP6DsEUDgJCplSoens/Ym/h7SFtITYv+7vm+2si6EQKDW3g4c88lgQSrOwq8Q=="
+      },
       "android": {
         "buildType": "apk"
       }

@@ -22,40 +22,47 @@ export default function RootLayout() {
 
   // Check for updates
   useEffect(() => {
-    checkForUpdates();
-  }, []);
-
-  async function checkForUpdates() {
-    try {
-      const update = await Updates.checkForUpdateAsync();
-      if (update.isAvailable) {
-        Alert.alert(
-          "Update Available",
-          "A new version is available. Would you like to update now?",
-          [
-            { text: "No" },
-            {
-              text: "Yes",
-              onPress: async () => {
-                try {
-                  await Updates.fetchUpdateAsync();
-                  await Updates.reloadAsync();
-                } catch (error) {
-                  Alert.alert(
-                    "Error",
-                    "An error occurred while updating. Please try again later."
-                  );
-                }
-              },
-            },
-          ]
-        );
-      }
-    } catch (error) {
-      // Handle or log error
-      console.log('Error checking for updates:', error);
+    if (process.env.NODE_ENV === 'development') {
+      return; // Skip update check in development
     }
-  }
+    
+    async function checkForUpdates() {
+      try {
+        if (!Updates.isEnabled) {
+          return; // Updates not supported
+        }
+
+        const update = await Updates.checkForUpdateAsync();
+        if (update.isAvailable) {
+          Alert.alert(
+            "Update Available",
+            "A new version is available. Would you like to update now?",
+            [
+              { text: "No" },
+              {
+                text: "Yes",
+                onPress: async () => {
+                  try {
+                    await Updates.fetchUpdateAsync();
+                    await Updates.reloadAsync();
+                  } catch (error) {
+                    // Silently fail on update error - don't block app usage
+                    console.log('Error updating:', error);
+                  }
+                },
+              },
+            ]
+          );
+        }
+      } catch (error) {
+        // Silently fail on update check error - don't block app usage
+        console.log('Error checking for updates:', error);
+      }
+    }
+
+    // Wrap in setTimeout to ensure app is initialized first
+    setTimeout(checkForUpdates, 3000);
+  }, []);
 
   useEffect(() => {
     async function prepare() {
