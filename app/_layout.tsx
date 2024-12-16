@@ -1,105 +1,112 @@
-import { useEffect, useState } from 'react';
-import { Slot, useRouter, useSegments } from 'expo-router';
-import { PaperProvider, MD3DarkTheme, MD3LightTheme } from 'react-native-paper';
-import { useThemeStore } from './store/themeStore';
-import { useAuthStore } from './store/authStore';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import AnimatedSplash from './components/AnimatedSplash';
-import * as SplashScreen from 'expo-splash-screen';
-import * as Updates from 'expo-updates';
-import { Alert } from 'react-native';
+import { useEffect, useState } from "react"
+import { Slot, useRouter, useSegments } from "expo-router"
+import { PaperProvider, MD3DarkTheme, MD3LightTheme } from "react-native-paper"
+import { useThemeStore } from "./store/themeStore"
+import { useAuthStore } from "./store/authStore"
+import { GestureHandlerRootView } from "react-native-gesture-handler"
+import AnimatedSplash from "./components/AnimatedSplash"
+import * as SplashScreen from "expo-splash-screen"
+import * as Updates from "expo-updates"
+import { Alert } from "react-native"
 
-SplashScreen.preventAutoHideAsync();
+SplashScreen.preventAutoHideAsync()
 
 export default function RootLayout() {
-  const router = useRouter();
-  const { isDarkMode } = useThemeStore();
-  const { session, isLoading, initialize } = useAuthStore();
-  const theme = isDarkMode ? MD3DarkTheme : MD3LightTheme;
-  const [isReady, setIsReady] = useState(false);
-  const [showAnimatedSplash, setShowAnimatedSplash] = useState(true);
+  const router = useRouter()
+  const { isDarkMode } = useThemeStore()
+  const { initialize, isAuthenticated, isLoading } = useAuthStore()
+  const theme = isDarkMode ? MD3DarkTheme : MD3LightTheme
+  const segments = useSegments()
+  const [showAnimatedSplash, setShowAnimatedSplash] = useState(true)
+  const [isInitialized, setIsInitialized] = useState(false)
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    if (process.env.NODE_ENV === 'development') {
-      return;
-    }
-    
-    async function checkForUpdates() {
+    const checkUpdates = async () => {
+      if (process.env.NODE_ENV === "development") return
+
       try {
         if (!Updates.isEnabled) {
-          return;
+          console.log("Expo Updates não está habilitado")
+          return
         }
 
-        const update = await Updates.checkForUpdateAsync();
+        const update = await Updates.checkForUpdateAsync()
         if (update.isAvailable) {
           Alert.alert(
-            "Update Available",
-            "A new version is available. Would you like to update now?",
+            "Atualização Disponível",
+            "Uma nova versão do aplicativo está disponível. Deseja atualizar agora?",
             [
-              { text: "No" },
               {
-                text: "Yes",
+                text: "Cancelar",
+                style: "cancel",
+              },
+              {
+                text: "Atualizar",
                 onPress: async () => {
                   try {
-                    await Updates.fetchUpdateAsync();
-                    await Updates.reloadAsync();
+                    await Updates.fetchUpdateAsync()
+                    await Updates.reloadAsync()
                   } catch (error) {
-                    console.log('Error updating:', error);
+                    console.error("Erro ao atualizar:", error)
+                    Alert.alert(
+                      "Erro de Atualização",
+                      "Não foi possível atualizar o aplicativo. Tente novamente mais tarde."
+                    )
                   }
                 },
               },
             ]
-          );
+          )
         }
       } catch (error) {
-        console.log('Error checking for updates:', error);
+        console.error("Erro ao verificar atualizações:", error)
       }
     }
 
-    setTimeout(checkForUpdates, 3000);
-  }, []);
-
-  useEffect(() => {
     const prepare = async () => {
       try {
-        await initialize();
-        await new Promise(resolve => setTimeout(resolve, 500));
-        await SplashScreen.hideAsync();
+        await initialize()
+        await checkUpdates()
+        await new Promise((resolve) => setTimeout(resolve, 500))
+        await SplashScreen.hideAsync()
       } catch (e) {
-        console.warn(e);
+        console.error("Erro durante inicialização:", e)
       } finally {
-        setIsReady(true);
+        setIsInitialized(true)
+        setShowAnimatedSplash(false)
       }
-    };
-
-    prepare();
-  }, [initialize]);
-
-  useEffect(() => {
-    if (!isReady || isLoading) return;
-
-    if (session) {
-      router.replace('/(app)');
-    } else {
-      router.replace('/(auth)/login');
     }
-  }, [isReady, isLoading, session, router]);
 
-  const handleAnimationComplete = () => {
-    setShowAnimatedSplash(false);
-  };
+    prepare()
+  }, [])
 
-  if (!isReady || isLoading) {
-    return showAnimatedSplash ? (
-      <AnimatedSplash onAnimationComplete={handleAnimationComplete} />
-    ) : null;
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    if (!isInitialized || isLoading) return
+
+    const inAuthGroup = segments[0] === "(auth)"
+
+    if (!isAuthenticated && !inAuthGroup) {
+      router.replace("/(auth)/login")
+    } else if (isAuthenticated && inAuthGroup) {
+      router.replace("/(app)")
+    }
+  }, [isLoading, isAuthenticated, segments, isInitialized])
+
+  if (showAnimatedSplash) {
+    return (
+      <AnimatedSplash
+        onAnimationComplete={() => setShowAnimatedSplash(false)}
+      />
+    )
   }
 
   return (
-    <PaperProvider theme={theme}>
-      <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <PaperProvider theme={theme}>
         <Slot />
-      </GestureHandlerRootView>
-    </PaperProvider>
-  );
+      </PaperProvider>
+    </GestureHandlerRootView>
+  )
 }

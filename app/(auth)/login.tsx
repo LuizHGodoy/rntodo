@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { TextInput, Button, Text, useTheme } from 'react-native-paper';
-import supabase from '../lib/supabase';
-import { Link } from 'expo-router';
+import { useAuthStore } from '../store/authStore';
+import { Link, useRouter } from 'expo-router';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -10,18 +10,29 @@ export default function LoginScreen() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const theme = useTheme();
+  const router = useRouter();
+  const { login } = useAuthStore();
 
   async function signInWithEmail() {
     setLoading(true);
     setError(null);
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const success = await login(email, password);
+      
+      console.log('🔐 Login result:', {
         email,
-        password,
+        success,
       });
-      if (error) throw error;
+
+      if (success) {
+        // Navegar para a tela principal
+        router.replace('/(app)');
+      } else {
+        setError('Falha no login. Verifique suas credenciais.');
+      }
     } catch (error) {
-      setError((error as Error).message);
+      console.error('🚨 Erro de login:', error);
+      setError('Ocorreu um erro inesperado');
     } finally {
       setLoading(false);
     }

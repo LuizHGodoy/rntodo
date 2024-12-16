@@ -3,15 +3,20 @@ import { StyleSheet, View } from 'react-native';
 import { Text, IconButton, useTheme, SegmentedButtons } from 'react-native-paper';
 import { useThemeStore } from '../store/themeStore';
 import { useViewStore, type ViewMode } from '../store/viewStore';
-import supabase from '../lib/supabase';
+import { useAuthStore } from '../store/authStore';
 
 export default function CustomHeader() {
   const theme = useTheme();
   const { isDarkMode, toggleTheme } = useThemeStore();
   const { viewMode, setViewMode } = useViewStore();
+  const { signOut } = useAuthStore();
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
+    try {
+      await signOut();
+    } catch (error) {
+      console.error("Erro ao fazer logout:", error);
+    }
   };
 
   return (
