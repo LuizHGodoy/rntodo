@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { TextInput, Button, Text, useTheme } from 'react-native-paper';
-import { Link } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { useAuthStore } from '../store/authStore';
 import supabase from '../lib/supabase';
 
@@ -13,6 +13,7 @@ export default function SignUpScreen() {
   const [error, setError] = useState<string | null>(null);
   const theme = useTheme();
   const { login } = useAuthStore();
+  const router = useRouter();
 
   async function handleSignUp() {
     if (!email || !password || !confirmPassword) {
@@ -123,11 +124,14 @@ export default function SignUpScreen() {
 
       <View style={styles.linkContainer}>
         <Text>Já tem uma conta? </Text>
-        <Link href="/(auth)/login" asChild>
-          <Button mode="text" compact disabled={loading}>
-            Entrar
-          </Button>
-        </Link>
+        <Button 
+          mode="text" 
+          compact 
+          disabled={loading}
+          onPress={() => router.back()}
+        >
+          Entrar
+        </Button>
       </View>
     </View>
   );
