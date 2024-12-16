@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { TextInput, Button, Text, useTheme } from 'react-native-paper';
 import { useAuthStore } from '../store/authStore';
-import { Link, useRouter } from 'expo-router';
+import { Link } from 'expo-router';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -10,7 +10,6 @@ export default function LoginScreen() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const theme = useTheme();
-  const router = useRouter();
   const { login } = useAuthStore();
 
   async function signInWithEmail() {
@@ -19,19 +18,11 @@ export default function LoginScreen() {
     try {
       const success = await login(email, password);
       
-      console.log('🔐 Login result:', {
-        email,
-        success,
-      });
-
-      if (success) {
-        // Navegar para a tela principal
-        router.replace('/(app)');
-      } else {
-        setError('Falha no login. Verifique suas credenciais.');
+      if (!success) {
+        setError('Email ou senha incorretos');
       }
     } catch (error) {
-      console.error('🚨 Erro de login:', error);
+      console.error('Erro de login:', error);
       setError('Ocorreu um erro inesperado');
     } finally {
       setLoading(false);
@@ -39,9 +30,9 @@ export default function LoginScreen() {
   }
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+    <View style={[styles.container]}>
       <Text variant="headlineMedium" style={styles.title}>
-        Welcome Back
+        Bem-vindo de volta
       </Text>
       
       <TextInput
@@ -52,14 +43,16 @@ export default function LoginScreen() {
         textContentType="emailAddress"
         keyboardType="email-address"
         style={styles.input}
+        error={!!error}
       />
       
       <TextInput
-        label="Password"
+        label="Senha"
         value={password}
         onChangeText={setPassword}
         secureTextEntry
         style={styles.input}
+        error={!!error}
       />
 
       {error && (
@@ -73,14 +66,17 @@ export default function LoginScreen() {
         onPress={signInWithEmail}
         loading={loading}
         style={styles.button}
+        disabled={loading || !email || !password}
       >
-        Sign In
+        Entrar
       </Button>
 
       <View style={styles.linkContainer}>
-        <Text>Don't have an account? </Text>
+        <Text>Não tem uma conta? </Text>
         <Link href="/(auth)/signup" asChild>
-          <Button mode="text" compact>Sign Up</Button>
+          <Button mode="text" compact disabled={loading}>
+            Criar Conta
+          </Button>
         </Link>
       </View>
     </View>

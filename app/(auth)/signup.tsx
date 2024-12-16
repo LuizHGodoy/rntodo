@@ -15,6 +15,11 @@ export default function SignUpScreen() {
   const { login } = useAuthStore();
 
   async function handleSignUp() {
+    if (!email || !password || !confirmPassword) {
+      setError("Preencha todos os campos");
+      return;
+    }
+
     if (password !== confirmPassword) {
       setError("As senhas não coincidem");
       return;
@@ -47,7 +52,6 @@ export default function SignUpScreen() {
       let errorMessage = "Erro ao criar conta";
       
       if (error instanceof Error) {
-        // Traduzir mensagens de erro comuns
         switch (error.message) {
           case "User already registered":
             errorMessage = "Este email já está cadastrado";
@@ -67,7 +71,7 @@ export default function SignUpScreen() {
   }
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+    <View style={[styles.container]}>
       <Text variant="headlineMedium" style={styles.title}>
         Criar Conta
       </Text>
@@ -80,6 +84,7 @@ export default function SignUpScreen() {
         textContentType="emailAddress"
         keyboardType="email-address"
         style={styles.input}
+        error={!!error}
       />
       
       <TextInput
@@ -88,6 +93,7 @@ export default function SignUpScreen() {
         onChangeText={setPassword}
         secureTextEntry
         style={styles.input}
+        error={!!error}
       />
 
       <TextInput
@@ -96,6 +102,7 @@ export default function SignUpScreen() {
         onChangeText={setConfirmPassword}
         secureTextEntry
         style={styles.input}
+        error={!!error}
       />
 
       {error && (
@@ -109,6 +116,7 @@ export default function SignUpScreen() {
         onPress={handleSignUp}
         loading={loading}
         style={styles.button}
+        disabled={loading || !email || !password || !confirmPassword}
       >
         Criar Conta
       </Button>
@@ -116,7 +124,9 @@ export default function SignUpScreen() {
       <View style={styles.linkContainer}>
         <Text>Já tem uma conta? </Text>
         <Link href="/(auth)/login" asChild>
-          <Button mode="text" compact>Entrar</Button>
+          <Button mode="text" compact disabled={loading}>
+            Entrar
+          </Button>
         </Link>
       </View>
     </View>
