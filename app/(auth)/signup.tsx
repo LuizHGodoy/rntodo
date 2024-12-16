@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { TextInput, Button, Text, useTheme } from 'react-native-paper';
+import { Link } from 'expo-router';
+import { useAuthStore } from '../store/authStore';
 import supabase from '../lib/supabase';
-import { Link, useRouter } from 'expo-router';
 
 export default function SignUpScreen() {
   const [email, setEmail] = useState('');
@@ -11,11 +12,16 @@ export default function SignUpScreen() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const theme = useTheme();
-  const router = useRouter();
+  const { login } = useAuthStore();
 
   async function handleSignUp() {
     if (password !== confirmPassword) {
-      setError("Passwords don't match");
+      setError("As senhas não coincidem");
+      return;
+    }
+
+    if (password.length < 6) {
+      setError("A senha deve ter pelo menos 6 caracteres");
       return;
     }
 
@@ -23,24 +29,38 @@ export default function SignUpScreen() {
     setError(null);
     
     try {
-      const { error: signUpError, data: signUpData } = await supabase.auth.signUp({
+      const { error: signUpError } = await supabase.auth.signUp({
         email,
         password,
       });
 
       if (signUpError) throw signUpError;
 
-      if (signUpData.user) {
-        const { error: signInError } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
-
-        if (signInError) throw signInError;
+      // Fazer login automaticamente após o cadastro
+      const loginSuccess = await login(email, password);
+      
+      if (!loginSuccess) {
+        throw new Error("Não foi possível fazer login automático após o cadastro");
       }
       
     } catch (error) {
-      setError((error as Error).message);
+      let errorMessage = "Erro ao criar conta";
+      
+      if (error instanceof Error) {
+        // Traduzir mensagens de erro comuns
+        switch (error.message) {
+          case "User already registered":
+            errorMessage = "Este email já está cadastrado";
+            break;
+          case "Invalid email":
+            errorMessage = "Email inválido";
+            break;
+          default:
+            errorMessage = error.message;
+        }
+      }
+      
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -49,7 +69,7 @@ export default function SignUpScreen() {
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <Text variant="headlineMedium" style={styles.title}>
-        Create Account
+        Criar Conta
       </Text>
       
       <TextInput
@@ -63,7 +83,7 @@ export default function SignUpScreen() {
       />
       
       <TextInput
-        label="Password"
+        label="Senha"
         value={password}
         onChangeText={setPassword}
         secureTextEntry
@@ -71,7 +91,7 @@ export default function SignUpScreen() {
       />
 
       <TextInput
-        label="Confirm Password"
+        label="Confirmar Senha"
         value={confirmPassword}
         onChangeText={setConfirmPassword}
         secureTextEntry
@@ -90,13 +110,13 @@ export default function SignUpScreen() {
         loading={loading}
         style={styles.button}
       >
-        Sign Up
+        Criar Conta
       </Button>
 
       <View style={styles.linkContainer}>
-        <Text>Already have an account? </Text>
+        <Text>Já tem uma conta? </Text>
         <Link href="/(auth)/login" asChild>
-          <Button mode="text" compact>Sign In</Button>
+          <Button mode="text" compact>Entrar</Button>
         </Link>
       </View>
     </View>
