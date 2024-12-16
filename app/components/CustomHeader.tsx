@@ -36,7 +36,7 @@ export default function CustomHeader() {
           variant="headlineMedium"
           style={[styles.title, { color: theme.colors.onBackground }]}
         >
-          Tarefas teste
+          Tarefas
         </Text>
         <View style={styles.actions}>
           <IconButton
