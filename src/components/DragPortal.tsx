@@ -1,8 +1,8 @@
 // biome-ignore lint/style/useImportType: <explanation>
-import React from 'react';
-import { StyleSheet } from 'react-native';
-import Animated from 'react-native-reanimated';
-import { Portal } from 'react-native-paper';
+import React from "react";
+import { StyleSheet } from "react-native";
+import { Portal } from "react-native-paper";
+import Animated from "react-native-reanimated";
 
 interface DragPortalProps {
   children: React.ReactNode;

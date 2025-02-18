@@ -1,7 +1,7 @@
-import { create } from 'zustand';
-import supabase from '../lib/supabase';
-import type { Session, User } from '@supabase/supabase-js';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import type { Session, User } from "@supabase/supabase-js";
+import { create } from "zustand";
+import supabase from "../lib/supabase";
 
 interface AuthState {
   session: Session | null;
@@ -21,7 +21,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   login: async (email: string, password: string) => {
     try {
       set({ isLoading: true });
-      
+
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -30,14 +30,14 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       if (error) throw error;
 
       if (data.session && data.user) {
-        await AsyncStorage.setItem('authToken', data.session.access_token);
-        await AsyncStorage.setItem('refreshToken', data.session.refresh_token);
+        await AsyncStorage.setItem("authToken", data.session.access_token);
+        await AsyncStorage.setItem("refreshToken", data.session.refresh_token);
 
-        set({ 
-          session: data.session, 
+        set({
+          session: data.session,
           user: data.user,
           isAuthenticated: true,
-          isLoading: false 
+          isLoading: false,
         });
         return true;
       }
@@ -45,7 +45,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       set({ isLoading: false });
       return false;
     } catch (error) {
-      console.error('Erro no login:', error);
+      console.error("Erro no login:", error);
       set({ isLoading: false });
       return false;
     }
@@ -53,61 +53,63 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   initialize: async () => {
     try {
       set({ isLoading: true });
-      
+
       const [savedToken, savedRefreshToken] = await Promise.all([
-        AsyncStorage.getItem('authToken'),
-        AsyncStorage.getItem('refreshToken')
+        AsyncStorage.getItem("authToken"),
+        AsyncStorage.getItem("refreshToken"),
       ]);
 
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
 
       if (!session && savedRefreshToken) {
-        const { data: refreshData, error: refreshError } = 
-          await supabase.auth.refreshSession({ 
-            refresh_token: savedRefreshToken 
+        const { data: refreshData, error: refreshError } =
+          await supabase.auth.refreshSession({
+            refresh_token: savedRefreshToken,
           });
 
         if (refreshData.session) {
-          set({ 
-            session: refreshData.session, 
+          set({
+            session: refreshData.session,
             user: refreshData.session.user,
             isAuthenticated: true,
-            isLoading: false 
+            isLoading: false,
           });
           return true;
         }
 
         // Se falhar o refresh, limpar tokens
         await Promise.all([
-          AsyncStorage.removeItem('authToken'),
-          AsyncStorage.removeItem('refreshToken')
+          AsyncStorage.removeItem("authToken"),
+          AsyncStorage.removeItem("refreshToken"),
         ]);
       }
 
       if (session?.user) {
-        set({ 
-          session, 
+        set({
+          session,
           user: session.user,
           isAuthenticated: true,
-          isLoading: false 
+          isLoading: false,
         });
         return true;
       }
 
-      set({ 
-        session: null, 
+      set({
+        session: null,
         user: null,
         isAuthenticated: false,
-        isLoading: false 
+        isLoading: false,
       });
       return false;
     } catch (error) {
-      console.error('Erro na inicialização:', error);
-      set({ 
-        session: null, 
+      console.error("Erro na inicialização:", error);
+      set({
+        session: null,
         user: null,
         isAuthenticated: false,
-        isLoading: false 
+        isLoading: false,
       });
       return false;
     }
@@ -116,16 +118,16 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     try {
       await supabase.auth.signOut();
       await Promise.all([
-        AsyncStorage.removeItem('authToken'),
-        AsyncStorage.removeItem('refreshToken')
+        AsyncStorage.removeItem("authToken"),
+        AsyncStorage.removeItem("refreshToken"),
       ]);
-      set({ 
-        session: null, 
+      set({
+        session: null,
         user: null,
-        isAuthenticated: false 
+        isAuthenticated: false,
       });
     } catch (error) {
-      console.error('Erro ao fazer logout:', error);
+      console.error("Erro ao fazer logout:", error);
     }
-  }
+  },
 }));

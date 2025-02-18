@@ -1,11 +1,15 @@
-import React from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
-import { Text, useTheme } from 'react-native-paper';
-import type Todo from '../types/todo';
-import DraggableCard from './DraggableCard';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import Animated, { useAnimatedStyle, withSpring, useSharedValue } from 'react-native-reanimated';
-import EditTodoDialog from './EditTodoDialog';
+import React from "react";
+import { ScrollView, StyleSheet, View } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { Text, useTheme } from "react-native-paper";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from "react-native-reanimated";
+import type Todo from "../types/todo";
+import DraggableCard from "./DraggableCard";
+import EditTodoDialog from "./EditTodoDialog";
 
 const AnimatedView = Animated.createAnimatedComponent(View);
 
@@ -26,7 +30,15 @@ interface ColumnProps {
   onDragUpdate: (x: number) => void;
 }
 
-function Column({ title, todos, onToggleTodo, onRemoveTodo, onEditTodo, isTargetColumn, onDragUpdate }: ColumnProps) {
+function Column({
+  title,
+  todos,
+  onToggleTodo,
+  onRemoveTodo,
+  onEditTodo,
+  isTargetColumn,
+  onDragUpdate,
+}: ColumnProps) {
   const theme = useTheme();
   const scale = useSharedValue(1);
   const opacity = useSharedValue(1);
@@ -51,30 +63,36 @@ function Column({ title, todos, onToggleTodo, onRemoveTodo, onEditTodo, isTarget
     setTodoToEdit(todo);
   }, []);
 
-  const handleConfirmEdit = React.useCallback((newTitle: string) => {
-    if (todoToEdit) {
-      onEditTodo(todoToEdit.id, newTitle);
-      setTodoToEdit(null);
-    }
-  }, [todoToEdit, onEditTodo]);
+  const handleConfirmEdit = React.useCallback(
+    (newTitle: string) => {
+      if (todoToEdit) {
+        onEditTodo(todoToEdit.id, newTitle);
+        setTodoToEdit(null);
+      }
+    },
+    [todoToEdit, onEditTodo]
+  );
 
   const handleCancelEdit = React.useCallback(() => {
     setTodoToEdit(null);
   }, []);
-  
+
   return (
     <AnimatedView style={[styles.column, animatedStyle]}>
-      <Text variant="titleMedium" style={[styles.columnTitle, { color: theme.colors.primary }]}>
+      <Text
+        variant="titleMedium"
+        style={[styles.columnTitle, { color: theme.colors.primary }]}
+      >
         {title}
       </Text>
-      <View 
+      <View
         style={[
-          styles.list, 
-          { 
+          styles.list,
+          {
             backgroundColor: theme.colors.elevation.level1,
-            borderColor: isTargetColumn ? theme.colors.primary : 'transparent',
+            borderColor: isTargetColumn ? theme.colors.primary : "transparent",
             borderWidth: 2,
-          }
+          },
         ]}
       >
         <ScrollView>
@@ -90,7 +108,12 @@ function Column({ title, todos, onToggleTodo, onRemoveTodo, onEditTodo, isTarget
             />
           ))}
           {todos.length === 0 && (
-            <Text style={[styles.emptyText, { color: theme.colors.onSurfaceDisabled }]}>
+            <Text
+              style={[
+                styles.emptyText,
+                { color: theme.colors.onSurfaceDisabled },
+              ]}
+            >
               No {title.toLowerCase()} todos
             </Text>
           )}
@@ -107,16 +130,23 @@ function Column({ title, todos, onToggleTodo, onRemoveTodo, onEditTodo, isTarget
   );
 }
 
-export default function KanbanView({ todos, onToggleTodo, onRemoveTodo, onEditTodo }: KanbanViewProps) {
+export default function KanbanView({
+  todos,
+  onToggleTodo,
+  onRemoveTodo,
+  onEditTodo,
+}: KanbanViewProps) {
   const pendingTodos = todos.filter((todo) => !todo.completed);
   const completedTodos = todos.filter((todo) => todo.completed);
-  const [draggedToColumn, setDraggedToColumn] = React.useState<'pending' | 'completed' | null>(null);
+  const [draggedToColumn, setDraggedToColumn] = React.useState<
+    "pending" | "completed" | null
+  >(null);
 
   const handleDragUpdate = React.useCallback((translationX: number) => {
     if (translationX > 100) {
-      setDraggedToColumn('completed');
+      setDraggedToColumn("completed");
     } else if (translationX < -100) {
-      setDraggedToColumn('pending');
+      setDraggedToColumn("pending");
     } else {
       setDraggedToColumn(null);
     }
@@ -132,7 +162,7 @@ export default function KanbanView({ todos, onToggleTodo, onRemoveTodo, onEditTo
             onToggleTodo={onToggleTodo}
             onRemoveTodo={onRemoveTodo}
             onEditTodo={onEditTodo}
-            isTargetColumn={draggedToColumn === 'pending'}
+            isTargetColumn={draggedToColumn === "pending"}
             onDragUpdate={handleDragUpdate}
           />
           <Column
@@ -141,7 +171,7 @@ export default function KanbanView({ todos, onToggleTodo, onRemoveTodo, onEditTo
             onToggleTodo={onToggleTodo}
             onRemoveTodo={onRemoveTodo}
             onEditTodo={onEditTodo}
-            isTargetColumn={draggedToColumn === 'completed'}
+            isTargetColumn={draggedToColumn === "completed"}
             onDragUpdate={handleDragUpdate}
           />
         </ScrollView>
@@ -156,24 +186,24 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     flex: 1,
-    position: 'relative',
+    position: "relative",
   },
   scrollContainer: {
     flex: 1,
   },
   scrollContent: {
     flexGrow: 1,
-    minWidth: '100%',
+    minWidth: "100%",
   },
   column: {
     width: 300,
     marginHorizontal: 8,
-    height: '100%',
+    height: "100%",
   },
   columnTitle: {
     marginVertical: 8,
-    textAlign: 'center',
-    fontWeight: 'bold',
+    textAlign: "center",
+    fontWeight: "bold",
   },
   list: {
     flex: 1,
@@ -181,8 +211,8 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   emptyText: {
-    textAlign: 'center',
+    textAlign: "center",
     marginTop: 16,
-    fontStyle: 'italic',
+    fontStyle: "italic",
   },
 });

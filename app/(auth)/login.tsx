@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { TextInput, Button, Text, useTheme } from 'react-native-paper';
-import { useAuthStore } from '../store/authStore';
-import { Link } from 'expo-router';
+import { Link } from "expo-router";
+import React, { useState } from "react";
+import { StyleSheet, View } from "react-native";
+import { Button, Text, TextInput, useTheme } from "react-native-paper";
+import { useAuthStore } from "../../src/store/authStore";
 
 export default function LoginScreen() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const theme = useTheme();
@@ -17,13 +17,13 @@ export default function LoginScreen() {
     setError(null);
     try {
       const success = await login(email, password);
-      
+
       if (!success) {
-        setError('Email ou senha incorretos');
+        setError("Email ou senha incorretos");
       }
     } catch (error) {
-      console.error('Erro de login:', error);
-      setError('Ocorreu um erro inesperado');
+      console.error("Erro de login:", error);
+      setError("Ocorreu um erro inesperado");
     } finally {
       setLoading(false);
     }
@@ -34,7 +34,7 @@ export default function LoginScreen() {
       <Text variant="headlineMedium" style={styles.title}>
         Bem-vindo de volta
       </Text>
-      
+
       <TextInput
         label="Email"
         value={email}
@@ -45,7 +45,7 @@ export default function LoginScreen() {
         style={styles.input}
         error={!!error}
       />
-      
+
       <TextInput
         label="Senha"
         value={password}
@@ -87,10 +87,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   title: {
-    textAlign: 'center',
+    textAlign: "center",
     marginBottom: 30,
   },
   input: {
@@ -100,13 +100,13 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   error: {
-    textAlign: 'center',
+    textAlign: "center",
     marginBottom: 10,
   },
   linkContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     marginTop: 20,
   },
 });

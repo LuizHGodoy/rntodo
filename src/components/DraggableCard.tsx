@@ -1,17 +1,17 @@
-import React from 'react';
-import { StyleSheet, Platform, type TextStyle } from 'react-native';
-import { Card, Text, useTheme } from 'react-native-paper';
+import React from "react";
+import { Platform, StyleSheet, type TextStyle } from "react-native";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import { Card, Text, useTheme } from "react-native-paper";
 import Animated, {
-  useAnimatedStyle,
-  withSpring,
-  useSharedValue,
-  runOnJS,
-  withTiming,
   interpolate,
-} from 'react-native-reanimated';
-import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import type Todo from '../types/todo';
-import DeleteConfirmationDialog from './DeleteConfirmationDialog';
+  runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+  withTiming,
+} from "react-native-reanimated";
+import type Todo from "../types/todo";
+import DeleteConfirmationDialog from "./DeleteConfirmationDialog";
 
 const AnimatedCard = Animated.createAnimatedComponent(Card);
 const SWIPE_THRESHOLD = 80;
@@ -25,7 +25,14 @@ interface DraggableCardProps {
   onDragUpdate: (x: number) => void;
 }
 
-export default function DraggableCard({ todo, onDragEnd, onToggle, onRemove, onEdit, onDragUpdate }: DraggableCardProps) {
+export default function DraggableCard({
+  todo,
+  onDragEnd,
+  onToggle,
+  onRemove,
+  onEdit,
+  onDragUpdate,
+}: DraggableCardProps) {
   const theme = useTheme();
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
@@ -57,14 +64,17 @@ export default function DraggableCard({ todo, onDragEnd, onToggle, onRemove, onE
 
   const panGesture = Gesture.Pan()
     .onBegin(() => {
-      'worklet';
+      "worklet";
       isDragging.value = true;
       scale.value = withSpring(1.05);
       zIndex.value = 999;
     })
     .onUpdate((event) => {
-      'worklet';
-      if (Math.abs(event.translationY) > 20 && Math.abs(event.translationX) < 20) {
+      "worklet";
+      if (
+        Math.abs(event.translationY) > 20 &&
+        Math.abs(event.translationX) < 20
+      ) {
         isDeleting.value = true;
         translateY.value = event.translationY;
         scale.value = withSpring(0.95);
@@ -75,7 +85,7 @@ export default function DraggableCard({ todo, onDragEnd, onToggle, onRemove, onE
       }
     })
     .onEnd((event) => {
-      'worklet';
+      "worklet";
       if (isDeleting.value && Math.abs(event.translationY) > SWIPE_THRESHOLD) {
         runOnJS(handleRemove)();
       } else {
@@ -90,14 +100,14 @@ export default function DraggableCard({ todo, onDragEnd, onToggle, onRemove, onE
         translateY.value = withSpring(0);
         scale.value = withSpring(1);
       }
-      
+
       isDragging.value = false;
       isDeleting.value = false;
       zIndex.value = 1;
       runOnJS(onDragUpdate)(0);
     })
     .onFinalize(() => {
-      'worklet';
+      "worklet";
       scale.value = withSpring(1);
       isDragging.value = false;
       isDeleting.value = false;
@@ -106,14 +116,14 @@ export default function DraggableCard({ todo, onDragEnd, onToggle, onRemove, onE
     });
 
   const tapGesture = Gesture.Tap().onEnd(() => {
-    'worklet';
+    "worklet";
     if (!isDragging.value) {
       runOnJS(onEdit)();
     }
   });
 
   const longPressGesture = Gesture.LongPress().onEnd(() => {
-    'worklet';
+    "worklet";
     runOnJS(handleRemove)();
   });
 
@@ -124,7 +134,7 @@ export default function DraggableCard({ todo, onDragEnd, onToggle, onRemove, onE
       translateY.value,
       [-SWIPE_THRESHOLD, 0, SWIPE_THRESHOLD],
       [-15, 0, 15],
-      'clamp'
+      "clamp"
     );
 
     return {
@@ -136,43 +146,41 @@ export default function DraggableCard({ todo, onDragEnd, onToggle, onRemove, onE
       ],
       opacity: opacity.value,
       zIndex: zIndex.value,
-      ...(Platform.OS === 'ios' ? {
-        shadowColor: '#000',
-        shadowOffset: {
-          width: 0,
-          height: isDragging.value ? 4 : 0,
-        },
-        shadowOpacity: isDragging.value ? 0.3 : 0,
-        shadowRadius: isDragging.value ? 4 : 0,
-      } : {
-        elevation: isDragging.value ? 8 : 1,
-      }),
-      backgroundColor: isDeleting.value 
-        ? theme.colors.errorContainer 
+      ...(Platform.OS === "ios"
+        ? {
+            shadowColor: "#000",
+            shadowOffset: {
+              width: 0,
+              height: isDragging.value ? 4 : 0,
+            },
+            shadowOpacity: isDragging.value ? 0.3 : 0,
+            shadowRadius: isDragging.value ? 4 : 0,
+          }
+        : {
+            elevation: isDragging.value ? 8 : 1,
+          }),
+      backgroundColor: isDeleting.value
+        ? theme.colors.errorContainer
         : theme.colors.elevation.level2,
     };
   });
 
-  const cardTextStyle = React.useMemo((): TextStyle => ({
-    color: isDeleting.value 
-      ? theme.colors.error
-      : theme.colors.onSurface,
-    textDecorationLine: todo.completed ? 'line-through' as const : 'none' as const,
-  }), [isDeleting, theme, todo]);
+  const cardTextStyle = React.useMemo(
+    (): TextStyle => ({
+      color: isDeleting.value ? theme.colors.error : theme.colors.onSurface,
+      textDecorationLine: todo.completed
+        ? ("line-through" as const)
+        : ("none" as const),
+    }),
+    [isDeleting, theme, todo]
+  );
 
   return (
     <>
       <GestureDetector gesture={gesture}>
         <AnimatedCard style={[styles.card, animatedStyle]}>
           <Card.Content>
-            <Text
-              style={[
-                styles.cardText,
-                cardTextStyle,
-              ]}
-            >
-              {todo.title}
-            </Text>
+            <Text style={[styles.cardText, cardTextStyle]}>{todo.title}</Text>
           </Card.Content>
         </AnimatedCard>
       </GestureDetector>

@@ -1,8 +1,8 @@
-import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { create } from "zustand";
+import { createJSONStorage, persist } from "zustand/middleware";
 
-export type ViewMode = 'list' | 'kanban';
+export type ViewMode = "list" | "kanban";
 
 interface ViewStore {
   viewMode: ViewMode;
@@ -12,11 +12,11 @@ interface ViewStore {
 const useViewStore = create<ViewStore>()(
   persist(
     (set) => ({
-      viewMode: 'list',
+      viewMode: "list",
       setViewMode: (mode) => set({ viewMode: mode }),
     }),
     {
-      name: 'view-storage',
+      name: "view-storage",
       storage: createJSONStorage(() => AsyncStorage),
     }
   )

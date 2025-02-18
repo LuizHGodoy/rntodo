@@ -1,28 +1,28 @@
-import React from "react"
-import { StyleSheet, View } from "react-native"
+import React from "react";
+import { StyleSheet, View } from "react-native";
 import {
-  Text,
   IconButton,
-  useTheme,
   SegmentedButtons,
-} from "react-native-paper"
-import { useThemeStore } from "../store/themeStore"
-import { useViewStore, type ViewMode } from "../store/viewStore"
-import { useAuthStore } from "../store/authStore"
+  Text,
+  useTheme,
+} from "react-native-paper";
+import { useAuthStore } from "../store/authStore";
+import { useThemeStore } from "../store/themeStore";
+import { type ViewMode, useViewStore } from "../store/viewStore";
 
 export default function CustomHeader() {
-  const theme = useTheme()
-  const { isDarkMode, toggleTheme } = useThemeStore()
-  const { viewMode, setViewMode } = useViewStore()
-  const { signOut } = useAuthStore()
+  const theme = useTheme();
+  const { isDarkMode, toggleTheme } = useThemeStore();
+  const { viewMode, setViewMode } = useViewStore();
+  const { signOut } = useAuthStore();
 
   const handleSignOut = async () => {
     try {
-      await signOut()
+      await signOut();
     } catch (error) {
-      console.error("Erro ao fazer logout:", error)
+      console.error("Erro ao fazer logout:", error);
     }
-  }
+  };
 
   return (
     <View
@@ -68,7 +68,7 @@ export default function CustomHeader() {
         />
       </View>
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -96,4 +96,4 @@ const styles = StyleSheet.create({
   viewSwitch: {
     borderRadius: 8,
   },
-})
+});

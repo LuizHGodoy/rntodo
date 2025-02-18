@@ -1,8 +1,8 @@
-import { create } from 'zustand';
-import supabase from '../lib/supabase';
-import type Database  from '../types/supabase';
+import { create } from "zustand";
+import supabase from "../lib/supabase";
+import type Database from "../types/supabase";
 
-type Todo = Database['public']['Tables']['todos']['Row'];
+type Todo = Database["public"]["Tables"]["todos"]["Row"];
 
 interface TodoStore {
   todos: Todo[];
@@ -24,9 +24,9 @@ const useTodoStore = create<TodoStore>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const { data, error } = await supabase
-        .from('todos')
-        .select('*')
-        .order('created_at', { ascending: false });
+        .from("todos")
+        .select("*")
+        .order("created_at", { ascending: false });
 
       if (error) throw error;
       set({ todos: data || [] });
@@ -40,11 +40,13 @@ const useTodoStore = create<TodoStore>((set, get) => ({
   addTodo: async (title: string) => {
     set({ isLoading: true, error: null });
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('User not authenticated');
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) throw new Error("User not authenticated");
 
       const { error } = await supabase
-        .from('todos')
+        .from("todos")
         .insert([{ title, user_id: user.id }]);
 
       if (error) throw error;
@@ -59,13 +61,13 @@ const useTodoStore = create<TodoStore>((set, get) => ({
   toggleTodo: async (id: string) => {
     set({ isLoading: true, error: null });
     try {
-      const todo = get().todos.find(t => t.id === id);
-      if (!todo) throw new Error('Todo not found');
+      const todo = get().todos.find((t) => t.id === id);
+      if (!todo) throw new Error("Todo not found");
 
       const { error } = await supabase
-        .from('todos')
+        .from("todos")
         .update({ completed: !todo.completed })
-        .eq('id', id);
+        .eq("id", id);
 
       if (error) throw error;
       await get().fetchTodos();
@@ -79,10 +81,7 @@ const useTodoStore = create<TodoStore>((set, get) => ({
   removeTodo: async (id: string) => {
     set({ isLoading: true, error: null });
     try {
-      const { error } = await supabase
-        .from('todos')
-        .delete()
-        .eq('id', id);
+      const { error } = await supabase.from("todos").delete().eq("id", id);
 
       if (error) throw error;
       await get().fetchTodos();
@@ -97,9 +96,9 @@ const useTodoStore = create<TodoStore>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const { error } = await supabase
-        .from('todos')
+        .from("todos")
         .update({ title })
-        .eq('id', id);
+        .eq("id", id);
 
       if (error) throw error;
       await get().fetchTodos();

@@ -1,6 +1,6 @@
-import React, { useCallback, useState, useEffect, useRef } from 'react';
-import { Portal, Dialog, TextInput, Button, Text } from 'react-native-paper';
-import type Todo from '../types/todo';
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { Button, Dialog, Portal, Text, TextInput } from "react-native-paper";
+import type Todo from "../types/todo";
 
 interface EditTodoDialogProps {
   visible: boolean;
@@ -15,20 +15,20 @@ export default function EditTodoDialog({
   onDismiss,
   onConfirm,
 }: EditTodoDialogProps) {
-  const [error, setError] = useState('');
-  const titleRef = useRef('');
+  const [error, setError] = useState("");
+  const titleRef = useRef("");
 
   useEffect(() => {
     if (todo) {
       titleRef.current = todo.title;
-      setError('');
+      setError("");
     }
   }, [todo]);
 
   const handleConfirm = useCallback(() => {
     const trimmedTitle = titleRef.current.trim();
     if (!trimmedTitle) {
-      setError('Todo title cannot be empty');
+      setError("Todo title cannot be empty");
       return;
     }
     onConfirm(trimmedTitle);
@@ -44,7 +44,7 @@ export default function EditTodoDialog({
             defaultValue={todo?.title}
             onChangeText={(text) => {
               titleRef.current = text;
-              setError('');
+              setError("");
             }}
             error={!!error}
             autoFocus
@@ -52,7 +52,7 @@ export default function EditTodoDialog({
             onSubmitEditing={handleConfirm}
           />
           {error ? (
-            <Text style={{ color: 'red', fontSize: 12, marginTop: 4 }}>
+            <Text style={{ color: "red", fontSize: 12, marginTop: 4 }}>
               {error}
             </Text>
           ) : null}

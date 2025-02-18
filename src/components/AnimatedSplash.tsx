@@ -1,15 +1,15 @@
-import React, { useCallback, useEffect } from 'react';
-import { StyleSheet, View } from 'react-native';
+import React, { useCallback, useEffect } from "react";
+import { StyleSheet, View } from "react-native";
+import { useTheme } from "react-native-paper";
 import Animated, {
-  useAnimatedProps,
-  useSharedValue,  
-  withTiming,
-  withDelay,
-  runOnJS,
   Easing,
-} from 'react-native-reanimated';
-import { Path, Svg, Circle } from 'react-native-svg';
-import { useTheme } from 'react-native-paper';
+  runOnJS,
+  useAnimatedProps,
+  useSharedValue,
+  withDelay,
+  withTiming,
+} from "react-native-reanimated";
+import { Circle, Path, Svg } from "react-native-svg";
 
 const AnimatedPath = Animated.createAnimatedComponent(Path);
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
@@ -18,8 +18,10 @@ interface AnimatedSplashProps {
   onAnimationComplete: () => void;
 }
 
-export default function AnimatedSplash({ onAnimationComplete }: AnimatedSplashProps) {
-  const theme = useTheme();  
+export default function AnimatedSplash({
+  onAnimationComplete,
+}: AnimatedSplashProps) {
+  const theme = useTheme();
   const circleScale = useSharedValue(0);
   const circleOpacity = useSharedValue(1);
   const checkProgress = useSharedValue(0);
@@ -29,7 +31,9 @@ export default function AnimatedSplash({ onAnimationComplete }: AnimatedSplashPr
   const CENTER = SIZE / 2;
   const RADIUS = SIZE / 3;
 
-  const checkPath = `M ${CENTER - SIZE/6} ${CENTER} l ${SIZE/8} ${SIZE/8} l ${SIZE/4} -${SIZE/4}`;
+  const checkPath = `M ${CENTER - SIZE / 6} ${CENTER} l ${SIZE / 8} ${
+    SIZE / 8
+  } l ${SIZE / 4} -${SIZE / 4}`;
 
   const animatedCircleProps = useAnimatedProps(() => ({
     r: RADIUS * circleScale.value,
@@ -56,14 +60,18 @@ export default function AnimatedSplash({ onAnimationComplete }: AnimatedSplashPr
 
     circleOpacity.value = withDelay(
       1600,
-      withTiming(0, {
-        duration: 400,
-        easing: Easing.out(Easing.ease),
-      }, (finished) => {
-        if (finished) {
-          runOnJS(onAnimationComplete)();
+      withTiming(
+        0,
+        {
+          duration: 400,
+          easing: Easing.out(Easing.ease),
+        },
+        (finished) => {
+          if (finished) {
+            runOnJS(onAnimationComplete)();
+          }
         }
-      })
+      )
     );
   }, [circleScale, checkProgress, circleOpacity, onAnimationComplete]);
 
@@ -98,8 +106,8 @@ export default function AnimatedSplash({ onAnimationComplete }: AnimatedSplashPr
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1A1B1E',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#1A1B1E",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

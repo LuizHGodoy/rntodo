@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { TextInput, Button, Text, useTheme } from 'react-native-paper';
-import { useRouter } from 'expo-router';
-import { useAuthStore } from '../store/authStore';
-import supabase from '../lib/supabase';
+import { useRouter } from "expo-router";
+import React, { useState } from "react";
+import { StyleSheet, View } from "react-native";
+import { Button, Text, TextInput, useTheme } from "react-native-paper";
+import supabase from "../../src/lib/supabase";
+import { useAuthStore } from "../../src/store/authStore";
 
 export default function SignUpScreen() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const theme = useTheme();
@@ -33,7 +33,7 @@ export default function SignUpScreen() {
 
     setLoading(true);
     setError(null);
-    
+
     try {
       const { error: signUpError } = await supabase.auth.signUp({
         email,
@@ -44,14 +44,15 @@ export default function SignUpScreen() {
 
       // Fazer login automaticamente após o cadastro
       const loginSuccess = await login(email, password);
-      
+
       if (!loginSuccess) {
-        throw new Error("Não foi possível fazer login automático após o cadastro");
+        throw new Error(
+          "Não foi possível fazer login automático após o cadastro"
+        );
       }
-      
     } catch (error) {
       let errorMessage = "Erro ao criar conta";
-      
+
       if (error instanceof Error) {
         switch (error.message) {
           case "User already registered":
@@ -64,7 +65,7 @@ export default function SignUpScreen() {
             errorMessage = error.message;
         }
       }
-      
+
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -76,7 +77,7 @@ export default function SignUpScreen() {
       <Text variant="headlineMedium" style={styles.title}>
         Criar Conta
       </Text>
-      
+
       <TextInput
         label="Email"
         value={email}
@@ -87,7 +88,7 @@ export default function SignUpScreen() {
         style={styles.input}
         error={!!error}
       />
-      
+
       <TextInput
         label="Senha"
         value={password}
@@ -124,9 +125,9 @@ export default function SignUpScreen() {
 
       <View style={styles.linkContainer}>
         <Text>Já tem uma conta? </Text>
-        <Button 
-          mode="text" 
-          compact 
+        <Button
+          mode="text"
+          compact
           disabled={loading}
           onPress={() => router.back()}
         >
@@ -141,10 +142,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   title: {
-    textAlign: 'center',
+    textAlign: "center",
     marginBottom: 30,
   },
   input: {
@@ -154,13 +155,13 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   error: {
-    textAlign: 'center',
+    textAlign: "center",
     marginBottom: 10,
   },
   linkContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     marginTop: 20,
   },
 });

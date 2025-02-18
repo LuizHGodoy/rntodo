@@ -1,5 +1,5 @@
-import React from 'react';
-import { Portal, Dialog, Button, Text } from 'react-native-paper';
+import React from "react";
+import { Button, Dialog, Portal, Text } from "react-native-paper";
 
 interface DeleteConfirmationDialogProps {
   visible: boolean;
@@ -13,8 +13,8 @@ export default function DeleteConfirmationDialog({
   visible,
   onDismiss,
   onConfirm,
-  title = 'Delete Todo',
-  content = 'Are you sure you want to delete this todo?',
+  title = "Delete Todo",
+  content = "Are you sure you want to delete this todo?",
 }: DeleteConfirmationDialogProps) {
   return (
     <Portal>
