@@ -1,0 +1,86 @@
+---
+description: 
+globs: *
+---
+Before diving into the best practices, please note that you may need to adapt the globs depending on your project's specific file structure and requirements.
+
+---
+name: expo-best-practices.mdc
+description: Best practices for Expo applications
+globs: **/*.{ts,tsx,js,jsx}
+---
+
+- Use `expo-updates` for over-the-air updates
+- Implement `expo-splash-screen` for a smooth app launch experience
+- Utilize `expo-secure-store` for secure data storage
+
+---
+name: react-navigation-best-practices.mdc
+description: Best practices for React Navigation in React Native
+globs: **/*.{ts,tsx,js,jsx}
+---
+
+- Use `native-stack` for better performance on mobile
+- Implement type-safe navigation with TypeScript
+- Use `screenOptions` for consistent styling across screens
+
+---
+name: supabase-best-practices.mdc
+description: Best practices for using Supabase in your application
+globs: **/*.{ts,tsx,js,jsx}
+---
+
+- Use Supabase's real-time capabilities for live updates
+- Implement proper error handling for API calls
+- Utilize Supabase's authentication for user management
+
+---
+name: axios-best-practices.mdc
+description: Best practices for using Axios for HTTP requests
+globs: **/*.{ts,tsx,js,jsx}
+---
+
+- Use interceptors for global request/response handling
+- Implement proper error handling and retries
+- Use cancel tokens to cancel ongoing requests when necessary
+
+---
+name: react-native-best-practices.mdc
+description: Best practices for React Native development
+globs: **/*.{ts,tsx,js,jsx}
+---
+
+- Use `react-native-reanimated` for smooth animations
+- Implement `react-native-gesture-handler` for better touch interactions
+- Utilize `react-native-safe-area-context` for safe area insets
+
+---
+name: react-native-paper-best-practices.mdc
+description: Best practices for using React Native Paper
+globs: **/*.{ts,tsx,js,jsx}
+---
+
+- Use the theme system for consistent styling
+- Implement custom components extending Paper's components
+- Utilize icons from the Material Design icon set
+
+---
+name: zustand-best-practices.mdc
+description: Best practices for state management with Zustand
+globs: **/*.{ts,tsx,js,jsx}
+---
+
+- Use TypeScript for type-safe state management
+- Implement middleware like `persist` for state persistence
+- Keep stores focused on specific domains of your application
+
+---
+name: typescript-best-practices.mdc
+description: TypeScript coding standards and type safety guidelines
+globs: **/*.{ts,tsx}
+---
+
+- Use strict null checks
+- Prefer interface over type
+- Use type guards and assertions
+- Implement proper type inference
